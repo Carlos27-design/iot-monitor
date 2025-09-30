@@ -1,0 +1,109 @@
+<div class="h-full w-full">
+  <!-- Panel de estadísticas -->
+  @if (totalAlerts() > 0) {
+  <div class="mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="bg-red-50 border border-red-200 rounded-lg p-3 text-center">
+      <div class="text-red-600 text-sm font-medium">Temperatura</div>
+      <div class="text-red-800 text-xl font-bold">{{ metricStats()['temperature'] || 0 }}</div>
+      <div class="text-red-500 text-xs">{{ getMetricPercentage('temperature') }}%</div>
+    </div>
+
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+      <div class="text-blue-600 text-sm font-medium">Humedad</div>
+      <div class="text-blue-800 text-xl font-bold">{{ metricStats()['humidity'] || 0 }}</div>
+      <div class="text-blue-500 text-xs">{{ getMetricPercentage('humidity') }}%</div>
+    </div>
+
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
+      <div class="text-yellow-600 text-sm font-medium">Batería</div>
+      <div class="text-yellow-800 text-xl font-bold">{{ metricStats()['battery'] || 0 }}</div>
+      <div class="text-yellow-500 text-xs">{{ getMetricPercentage('battery') }}%</div>
+    </div>
+
+    <div class="bg-teal-50 border border-teal-200 rounded-lg p-3 text-center">
+      <div class="text-teal-600 text-sm font-medium">Otras</div>
+      <div class="text-teal-800 text-xl font-bold">{{ metricStats()['other'] || 0 }}</div>
+      <div class="text-teal-500 text-xs">{{ getMetricPercentage('other') }}%</div>
+    </div>
+  </div>
+  }
+
+  <!-- Información general -->
+  <div
+    class="mb-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600 flex justify-between items-center"
+  >
+    <div class="flex gap-4">
+      <span
+        >Total alertas: <strong class="text-gray-900">{{ totalAlerts() }}</strong></span
+      >
+      <span
+        >Días con datos: <strong class="text-gray-900">{{ barChartLabels().length }}</strong></span
+      >
+    </div>
+  </div>
+
+  <!-- Gráfico -->
+  @if (barChartLabels().length > 0) {
+  <div class="relative h-96 w-full">
+    <canvas
+      baseChart
+      type="bar"
+      [data]="{
+        labels: barChartLabels(),
+        datasets: barChartData()
+      }"
+      [options]="chartOptions"
+    >
+    </canvas>
+  </div>
+
+  <!-- Leyenda personalizada con más detalles -->
+  <div class="mt-4 text-xs text-gray-600">
+    <div class="flex flex-wrap gap-4 justify-center">
+      <div class="flex items-center gap-1">
+        <div class="w-3 h-3 bg-red-400 rounded"></div>
+        <span>Temperatura ({{ metricStats()['temperature'] || 0 }} alertas)</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <div class="w-3 h-3 bg-blue-400 rounded"></div>
+        <span>Humedad ({{ metricStats()['humidity'] || 0 }} alertas)</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <div class="w-3 h-3 bg-yellow-400 rounded"></div>
+        <span>Batería ({{ metricStats()['battery'] || 0 }} alertas)</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <div class="w-3 h-3 bg-teal-400 rounded"></div>
+        <span>Otras ({{ metricStats()['other'] || 0 }} alertas)</span>
+      </div>
+    </div>
+  </div>
+  } @else {
+  <div class="flex items-center justify-center h-96 text-gray-500">
+    <div class="text-center">
+      @if (totalAlerts() === 0) {
+      <div class="mb-4">
+        <svg
+          class="w-16 h-16 mx-auto text-gray-300"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="1"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+          ></path>
+        </svg>
+      </div>
+      <p class="text-lg font-medium">No hay alertas para este dispositivo</p>
+      <p class="text-sm mt-2">Las alertas aparecerán aquí cuando estén disponibles</p>
+      } @else {
+      <p class="text-lg">Procesando {{ totalAlerts() }} alertas...</p>
+      <p class="text-sm mt-2">El gráfico se mostrará en breve</p>
+      }
+    </div>
+  </div>
+  }
+</div>

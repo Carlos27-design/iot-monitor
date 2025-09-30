@@ -1,0 +1,11 @@
+<div class="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition w-full max-w-sm mx-auto">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-lg font-semibold text-gray-800">Humedad</h3>
+    <mat-icon>water</mat-icon>
+  </div>
+
+  <!-- Valor Principal -->
+  <div class="text-3xl font-bold text-blue-400 mb-2">
+    {{ metrics().length ? (metrics()[metrics().length - 1].valueNum | number : '1.2-2') : '--' }}
+  </div>
+</div>

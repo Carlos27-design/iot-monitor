@@ -1,0 +1,70 @@
+services:
+  db:
+    image: postgres:14.3
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    container_name: iot-monitor-db
+
+  backend:
+    build:
+      context: ./iot-monitor-api
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - simulator
+    env_file:
+      - .env
+    restart: always
+    environment:
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      PORT: ${PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      SERVICE_SMTP: ${SERVICE_SMTP}
+      USER_SMTP: ${USER_SMTP}
+      PASSWORD_SMTP: ${PASSWORD_SMTP}
+    container_name: iot-monitor-backend
+    command: yarn start:dev
+
+  simulator:
+    build:
+      context: ./iot-monitor-simulator
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    restart: always
+    environment:
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+
+    container_name: iot-monitor-simulator
+    command: yarn start:dev
+
+  frontend:
+    build:
+      context: ./iot-monitor-web
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+    restart: always
+    container_name: iot-monitor-frontend

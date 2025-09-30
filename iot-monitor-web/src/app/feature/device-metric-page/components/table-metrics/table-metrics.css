@@ -1,0 +1,19 @@
+/* Ajusta la tabla para que no se vea recargada en pantallas pequeñas */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+td {
+  font-size: 14px;
+}
+
+.mat-mdc-paginator {
+  background: transparent;
+  font-size: 14px;
+}

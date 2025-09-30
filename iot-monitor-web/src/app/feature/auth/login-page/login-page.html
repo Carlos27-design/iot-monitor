@@ -1,0 +1,30 @@
+<form
+  (ngSubmit)="onSubmit()"
+  [formGroup]="loginForm"
+  class="flex flex-col space-y-4 animate-slideIn"
+>
+  <!--Email-->
+  <mat-form-field class="w-full">
+    <mat-label>Correo Electrónico:</mat-label>
+    <input matInput type="email" name="email" formControlName="email" />
+  </mat-form-field>
+
+  <!--Password-->
+  <mat-form-field class="w-full">
+    <mat-label>Contraseña:</mat-label>
+    <input matInput type="password" name="password" formControlName="password" />
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit" class="w-full mt-2">
+    Iniciar Sesión
+  </button>
+
+  <div class="text-center mt-2">
+    <a
+      class="text-blue-600 hover:underline cursor-pointer hover:text-blue-300"
+      routerLink="/auth/register"
+    >
+      ¿No tienes cuenta? Registrate
+    </a>
+  </div>
+</form>

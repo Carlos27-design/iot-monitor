@@ -1,0 +1,131 @@
+<div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 max-w-6xl mx-auto">
+  <!-- Encabezado -->
+  <div
+    class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 space-y-2 sm:space-y-0"
+  >
+    <h2 class="text-lg sm:text-xl font-semibold text-gray-800">Histórico de Alertas</h2>
+    <span class="text-xs sm:text-sm text-gray-500">
+      Últimas alertas del dispositivo {{ deviceResource.value()?.name }}
+    </span>
+  </div>
+
+  <!--Exportar a excel-->
+  <div class="flex flex-col sm:flex-row sm:justify-between gap-3 mb-3 items-center">
+    <!-- Botón Volver -->
+    <button
+      mat-raised-button
+      class="flex items-center justify-center gap-2 w-full sm:w-auto"
+      (click)="goToMetric(deviceResource.value()!)"
+    >
+      <mat-icon>arrow_back</mat-icon>
+      <span class="hidden sm:inline">Volver</span>
+    </button>
+
+    <!-- Formulario Date Range -->
+    <form [formGroup]="formRangePicker" class="w-full sm:w-auto flex items-center gap-2">
+      <mat-form-field class="w-full sm:w-72">
+        <mat-date-range-input [rangePicker]="picker">
+          <input matStartDate placeholder="fecha inicial" formControlName="start" />
+          <input matEndDate placeholder="fecha final" formControlName="end" />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </form>
+
+    <!-- Botón Exportar -->
+    <button
+      mat-raised-button
+      color="primary"
+      class="flex items-center justify-center gap-2 w-full sm:w-auto"
+      (click)="exportExcel()"
+    >
+      <mat-icon>file_download</mat-icon>
+      <span class="hidden sm:inline">Exportar a Excel</span>
+    </button>
+  </div>
+
+  <!-- Contenedor tabla -->
+  <div class="mt-4 overflow-x-auto rounded-lg border border-gray-200">
+    <table mat-table [dataSource]="dataSource" class="w-full min-w-[600px] sm:min-w-full">
+      <!-- Métricas -->
+      <ng-container matColumnDef="metric">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          class="px-4 py-2 text-center text-gray-600 text-sm sm:text-base"
+        >
+          Métrica
+        </th>
+        <td mat-cell *matCellDef="let row" class="px-4 py-2 text-sm">
+          {{ row.metric.metric }}
+        </td>
+      </ng-container>
+
+      <!-- Tipo de alerta -->
+      <ng-container matColumnDef="alertType">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          class="px-4 py-2 text-center text-gray-600 text-sm sm:text-base"
+        >
+          Tipo de Alerta
+        </th>
+        <td mat-cell *matCellDef="let row" class="px-4 py-2 text-sm">
+          {{ row.alertType }}
+        </td>
+      </ng-container>
+
+      <!-- Severidad -->
+      <ng-container matColumnDef="severety">
+        <th mat-header-cell *matHeaderCellDef class="px-4 py-2 text-center text-gray-600 text-sm">
+          Severidad
+        </th>
+        <td mat-cell *matCellDef="let row" class="px-4 py-2 text-sm text-center">
+          {{ row.severety }}
+        </td>
+      </ng-container>
+
+      <!-- Resuelto -->
+      <ng-container matColumnDef="resolved">
+        <th mat-header-cell *matHeaderCellDef class="px-4 py-2 text-center text-gray-600 text-sm">
+          Resuelto
+        </th>
+        <td mat-cell *matCellDef="let row" class="px-4 py-2 text-sm text-center">
+          @if(row.resolved){
+          <mat-icon class="text-green-500">check_circle</mat-icon>
+          }
+          <!-- No resuelto -->
+          @else {
+          <mat-icon class="text-red-500">cancel</mat-icon>
+          }
+        </td>
+      </ng-container>
+
+      <!-- Fecha -->
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef class="px-4 py-2 text-center text-gray-600 text-sm">
+          Fecha y hora
+        </th>
+        <td mat-cell *matCellDef="let row" class="px-4 py-2 text-sm text-center">
+          {{ row.createdAt | date : 'dd/MM/yyyy HH:mm' }}
+        </td>
+      </ng-container>
+
+      <!-- Filas -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        class="hover:!bg-blue-500 hover:!text-white transition cursor-pointer"
+        *matRowDef="let row; columns: displayedColumns"
+      ></tr>
+    </table>
+
+    <!-- Paginador -->
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 15, 20]"
+      showFirstLastButtons
+      aria-label="Select Alert"
+    ></mat-paginator>
+  </div>
+</div>
